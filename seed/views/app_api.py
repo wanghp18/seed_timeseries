@@ -242,7 +242,7 @@ def get_buildings_finer_timeseries_start_end(canonical_id=None):
 
     headers = {'content-type': 'application/json'}
 
-    response = requests.post(settings.TSDB['query_url'], data=query_str, headers=headers)
+    response = requests.post(settings.TSDB['query_url'], data=query_str, headers=headers, timeout=None)
 
     ret = {}
     json_data = response.json()
@@ -308,15 +308,10 @@ def do_days_query(q):
 
         metric['tags'] = tags
 
-        group_by = {}
-        group_by['name'] = 'tag'
-        group_by['tags'] = []
-        group_by['tags'].append('canonical_id')
-        metric['group_by'] = []
-        metric['group_by'].append(group_by)
-
         aggregator = {}
-        aggregator['name'] = 'sum'
+        aggregator['name'] = 'avg'
+        aggregator['align_sampling'] = 'true'
+        aggregator['align_start_time'] = 'true'
         aggregator_sampling = {}
         aggregator_sampling['value'] = 1
         aggregator_sampling['unit'] = 'hours'
@@ -331,11 +326,16 @@ def do_days_query(q):
 
         headers = {'content-type': 'application/json'}
 
-        response = requests.post(settings.TSDB['query_url'], data=query_str, headers=headers)
+        response = requests.post(settings.TSDB['query_url'], data=query_str, headers=headers, timeout=None)
 
         if response.status_code == 200:
             json_data = response.json()
             values = json_data['queries'][0]['results'][0]['values']
+            tags = json_data['queries'][0]['results'][0]['tags']
+
+            interval = 3600
+            if 'interval' in tags:
+                interval = int(tags['interval'][0])
 
             del values[240:]
 
@@ -350,7 +350,11 @@ def do_days_query(q):
                 diff_days = 10
 
             for d in xrange(diff_days):
-                result[start_day + d] = values[d * 24: (d + 1) * 24]
+                days_values = values[d * 24: (d + 1) * 24]
+                if interval and interval<3600:
+                    days_values = [x*3600/interval for x in days_values]
+
+                result[start_day + d] = days_values
         else:
             _log.error(response.status_code)
             _log.error(response.text)
