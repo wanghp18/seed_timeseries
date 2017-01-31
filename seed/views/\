@@ -1,0 +1,45 @@
+from django.conf.urls import patterns, url
+
+urlpatterns = patterns(
+    'seed.views.app_api',
+    url(
+        r'^query_building_info/$',
+        'query_building_info',
+        name='query_building_info'
+    ),
+    url(
+        r'^get_building_monthly_energy_consumptions_by_building_type/$',
+        'get_building_monthly_energy_consumptions_by_building_type',
+        name='get_building_monthly_energy_consumptions_by_building_type'
+    ),
+    url(
+        r'^operation/$',
+        'operation',
+        name='operation'
+    ),
+    url(
+        r'^available_time/$',
+        'available_time',
+        name='available_time'
+    ),
+    url(
+        r'^available_type/$',
+        'available_type',
+        name='available_type'
+    ),
+    url(
+        r'^utility_usage/$',
+        'utility_usage',
+        name='utility_usage'
+    ),
+    url(
+        r'^utility_cost/$',
+        'utility_cost',
+        name='utility_cost'
+    ),
+    url(
+        r'^eui_building_type/$',
+        'eui_building_type',
+        name='eui_building_type'
+    ),
+)

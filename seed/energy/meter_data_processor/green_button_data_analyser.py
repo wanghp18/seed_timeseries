@@ -103,7 +103,7 @@ def data_analyse(ts_data, name):
         end_time = datetime.fromtimestamp(begin_ts + interval)
         reading = float(ts_cell['value'])
         if 'tens' in ts_cell:
-            reading *= math.pow(10, int(ts_cell['value']))
+            reading *= math.pow(10, int(ts_cell['tens']))
 
         db_record = TimeSeries.objects.filter(meter_id=seed_meter_id, begin_time=begin_time)
         if not db_record:

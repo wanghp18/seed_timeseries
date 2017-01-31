@@ -3,6 +3,7 @@ import logging
 
 import json
 import numpy as np
+import pandas as pd
 
 from seed.energy.pm_energy_template import query as qr
 
@@ -21,6 +22,9 @@ def pm_to_json_single(meter_con_df):
     # Replace empty cell with NaN
     for c in meter_con_df.select_dtypes(include=["object"]).columns:
         meter_con_df[c] = meter_con_df[c].replace('', np.nan)
+
+    meter_con_df['Start Date'] = pd.to_datetime(meter_con_df['Start Date'])
+    meter_con_df['End Date'] = pd.to_datetime(meter_con_df['End Date'])
 
     # Remove rows missing critical data
     meter_con_df = meter_con_df.dropna(axis=0, how='any', subset=['Street Address',
