@@ -23,11 +23,11 @@ from kombu import Exchange, Queue
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'seed',
-        'USER': 'your-username',
-        'PASSWORD': 'your-password',
-        'HOST': 'your-host',
-        'PORT': 'your-port',
+        'NAME': 'seed-deploy',
+        'USER': 'seed-user',
+        'PASSWORD': 'seed-user',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
